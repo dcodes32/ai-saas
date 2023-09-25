@@ -19,35 +19,53 @@ const routes = [
     color: "text-sky-500"
   },
   {
-    label: 'Conversation',
+    label: 'Conversación',
     icon: MessageSquare,
     href: '/conversation',
     color: "text-violet-500",
   },
   {
-    label: 'Image Generation',
-    icon: ImageIcon,
-    color: "text-pink-700",
-    href: '/image',
-  },
+    label: 'Producto de lujo',
+    icon: MessageSquare,
+    href: 'Producto%20de%20lujo',
+    color: "text-violet-500",
+  }, 
   {
-    label: 'Video Generation',
-    icon: VideoIcon,
-    color: "text-orange-700",
-    href: '/video',
-  },
+    label: 'Producto innovador',
+    icon: MessageSquare,
+    href: 'Producto%20innovador',
+    color: "text-violet-500",
+  }, 
   {
-    label: 'Music Generation',
-    icon: Music,
-    color: "text-emerald-500",
-    href: '/music',
-  },
+    label: 'Promoción de evento',
+    icon: MessageSquare,
+    href: 'Promoción%20de%20evento',
+    color: "text-violet-500",
+  }, 
   {
-    label: 'Code Generation',
-    icon: Code,
-    color: "text-green-700",
-    href: '/code',
-  },
+    label: 'Producto progresivo',
+    icon: MessageSquare,
+    href: 'Producto%20progresivo',
+    color: "text-violet-500",
+  }, 
+  {
+    label: 'Seminario web',
+    icon: MessageSquare,
+    href: 'Seminario%20web',
+    color: "text-violet-500",
+  }, 
+  {
+    label: 'Campaña Publicitaria',
+    icon: MessageSquare,
+    href: 'Campaña%20Publicitaria',
+    color: "text-violet-500",
+  }, 
+  {
+    label: 'testing',
+    icon: MessageSquare,
+    href: 'testing',
+    color: "text-violet-500",
+  }, 
   {
     label: 'Settings',
     icon: Settings,
@@ -72,7 +90,7 @@ export const Sidebar = ({
             <Image fill alt="Logo" src="/logo.png" />
           </div>
           <h1 className={cn("text-2xl font-bold", poppins.className)}>
-            Genius
+            SuperPrompts
           </h1>
         </Link>
         <div className="space-y-1">

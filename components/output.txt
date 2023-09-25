@@ -1,0 +1,2027 @@
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/subscription-button.tsx
+"use client";
+
+import axios from "axios";
+import { useState } from "react";
+import { Zap } from "lucide-react";
+import { toast } from "react-hot-toast";
+
+import { Button } from "@/components/ui/button";
+
+export const SubscriptionButton = ({
+  isPro = false
+}: {
+  isPro: boolean;
+}) => {
+  const [loading, setLoading] = useState(false);
+
+  const onClick = async () => {
+    try {
+      setLoading(true);
+
+      const response = await axios.get("/api/stripe");
+
+      window.location.href = response.data.url;
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Button variant={isPro ? "default" : "premium"} disabled={loading} onClick={onClick} >
+      {isPro ? "Manage Subscription" : "Upgrade"}
+      {!isPro && <Zap className="w-4 h-4 ml-2 fill-white" />}
+    </Button>
+  )
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/user-avatar.tsx
+import { useUser } from "@clerk/nextjs";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+export const UserAvatar = () => {
+  const { user } = useUser();
+
+  return (
+    <Avatar className="h-8 w-8">
+      <AvatarImage src={user?.profileImageUrl} />
+      <AvatarFallback>
+        {user?.firstName?.charAt(0)}
+        {user?.lastName?.charAt(0)}
+      </AvatarFallback>
+    </Avatar>
+  );
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/tool-card.tsx
+"use client";
+
+import Image from "next/image";
+
+import { 
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
+
+interface ToolCardProps {
+  src: string,
+  href: string,
+  title: string,
+  description: string,
+  premium?: boolean;
+}
+
+export const ToolCard = ({
+  src,
+  href,
+  title,
+  description,
+  premium
+}: ToolCardProps) => {
+  const router = useRouter();
+  
+  const onClick = () => {
+    router.push(href);
+  }
+
+  return (
+    <Card onClick={onClick} className="group cursor-pointer">
+      <CardHeader>
+        <CardTitle className="text-lg font-bold flex items-center">
+        <div className="relative h-8 w-8 mr-2 group-hover:scale-125 transition duration-150">
+          <Image alt="Icon" src={src} fill />
+        </div>
+          {title}
+        </CardTitle>
+        <CardDescription>{description}</CardDescription>
+        {premium && (
+          <CardContent className="p-0">
+            <Badge variant="premium" className="uppercase">pro</Badge>
+          </CardContent>
+        )}
+      </CardHeader>
+    </Card>
+  );
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/modal-provider.tsx
+"use client";
+
+import { useEffect, useState } from "react";
+
+import { ProModal } from "@/components/pro-modal";
+
+export const ModalProvider = () => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
+  return (
+    <>
+      <ProModal />
+    </>
+  );
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/landing-navbar.tsx
+"use client";
+
+import { Montserrat } from "next/font/google";
+import Image from "next/image"
+import Link from "next/link"
+import { useAuth } from "@clerk/nextjs";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+const font = Montserrat({ weight: '600', subsets: ['latin'] });
+
+export const LandingNavbar = () => {
+  const { isSignedIn } = useAuth();
+
+  return (
+    <nav className="p-4 bg-transparent flex items-center justify-between">
+      <Link href="/" className="flex items-center">
+        <div className="relative h-8 w-8 mr-4">
+          <Image fill alt="Logo" src="/logo.png" />
+        </div>
+        <h1 className={cn("text-2xl font-bold text-white", font.className)}>
+          Genius
+        </h1>
+      </Link>
+      <div className="flex items-center gap-x-2">
+        <Link href={isSignedIn ? "/dashboard" : "/sign-up"}>
+          <Button variant="outline" className="rounded-full">
+            Get Started
+          </Button>
+        </Link>
+      </div>
+    </nav>
+  )
+}
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/sidebar.tsx
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { Montserrat } from 'next/font/google'
+import { Code, ImageIcon, LayoutDashboard, MessageSquare, Music, Settings, VideoIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
+
+import { cn } from "@/lib/utils";
+import { FreeCounter } from "@/components/free-counter";
+
+const poppins = Montserrat ({ weight: '600', subsets: ['latin'] });
+
+const routes = [
+  {
+    label: 'Dashboard',
+    icon: LayoutDashboard,
+    href: '/dashboard',
+    color: "text-sky-500"
+  },
+  {
+    label: 'Conversation',
+    icon: MessageSquare,
+    href: '/conversation',
+    color: "text-violet-500",
+  },
+  {
+    label: 'Image Generation',
+    icon: ImageIcon,
+    color: "text-pink-700",
+    href: '/image',
+  },
+  {
+    label: 'Video Generation',
+    icon: VideoIcon,
+    color: "text-orange-700",
+    href: '/video',
+  },
+  {
+    label: 'Music Generation',
+    icon: Music,
+    color: "text-emerald-500",
+    href: '/music',
+  },
+  {
+    label: 'Code Generation',
+    icon: Code,
+    color: "text-green-700",
+    href: '/code',
+  },
+  {
+    label: 'Settings',
+    icon: Settings,
+    href: '/settings',
+  },
+];
+
+export const Sidebar = ({
+  apiLimitCount = 0,
+  isPro = false
+}: {
+  apiLimitCount: number;
+  isPro: boolean;
+}) => {
+  const pathname = usePathname();
+
+  return (
+    <div className="space-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
+      <div className="px-3 py-2 flex-1">
+        <Link href="/dashboard" className="flex items-center pl-3 mb-14">
+          <div className="relative h-8 w-8 mr-4">
+            <Image fill alt="Logo" src="/logo.png" />
+          </div>
+          <h1 className={cn("text-2xl font-bold", poppins.className)}>
+            Genius
+          </h1>
+        </Link>
+        <div className="space-y-1">
+          {routes.map((route) => (
+            <Link
+              key={route.href} 
+              href={route.href}
+              className={cn(
+                "text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition",
+                pathname === route.href ? "text-white bg-white/10" : "text-zinc-400",
+              )}
+            >
+              <div className="flex items-center flex-1">
+                <route.icon className={cn("h-5 w-5 mr-3", route.color)} />
+                {route.label}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+      <FreeCounter 
+        apiLimitCount={apiLimitCount} 
+        isPro={isPro}
+      />
+    </div>
+  );
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/navbar.tsx
+import { UserButton } from "@clerk/nextjs";
+
+import { MobileSidebar } from "@/components/mobile-sidebar";
+import { getApiLimitCount } from "@/lib/api-limit";
+import { checkSubscription } from "@/lib/subscription";
+
+const Navbar = async () => {
+  const apiLimitCount = await getApiLimitCount();
+  const isPro = await checkSubscription();
+
+  return ( 
+    <div className="flex items-center p-4">
+      <MobileSidebar isPro={isPro} apiLimitCount={apiLimitCount} />
+      <div className="flex w-full justify-end">
+        <UserButton afterSignOutUrl="/" />
+      </div>
+    </div>
+   );
+}
+ 
+export default Navbar;
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/mobile-sidebar.tsx
+"use client";
+
+import { useEffect, useState } from "react";
+import { Menu } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sidebar } from "@/components/sidebar";
+
+export const MobileSidebar = ({
+  apiLimitCount = 0,
+  isPro = false
+}: {
+  apiLimitCount: number;
+  isPro: boolean;
+}) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
+  return (
+    <Sheet>
+      <SheetTrigger>
+        <Button variant="ghost" size="icon" className="md:hidden">
+          <Menu />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="p-0">
+        <Sidebar isPro={isPro} apiLimitCount={apiLimitCount} />
+      </SheetContent>
+    </Sheet>
+  );
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/free-counter.tsx
+import { Zap } from "lucide-react";
+import { useEffect, useState } from "react";
+
+import { MAX_FREE_COUNTS } from "@/constants";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { useProModal } from "@/hooks/use-pro-modal";
+
+export const FreeCounter = ({
+  isPro = false,
+  apiLimitCount = 0,
+}: {
+  isPro: boolean,
+  apiLimitCount: number
+}) => {
+  const [mounted, setMounted] = useState(false);
+  const proModal = useProModal();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+  
+
+  if (isPro) {
+    return null;
+  }
+
+  return (
+    <div className="px-3">
+      <Card className="bg-white/10 border-0">
+        <CardContent className="py-6">
+          <div className="text-center text-sm text-white mb-4 space-y-2">
+            <p>
+              {apiLimitCount} / {MAX_FREE_COUNTS} Free Generations
+            </p>
+            <Progress className="h-3" value={(apiLimitCount / MAX_FREE_COUNTS) * 100} />
+          </div>
+          <Button onClick={proModal.onOpen} variant="premium" className="w-full">
+            Upgrade
+            <Zap className="w-4 h-4 ml-2 fill-white" />
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/crisp-chat.tsx
+"use client";
+
+import { useEffect } from "react";
+import { Crisp } from "crisp-sdk-web";
+
+export const CrispChat = () => {
+  useEffect(() => {
+    Crisp.configure("8254f25a-eca0-421e-b4de-2bf655c03887");
+  }, []);
+
+  return null;
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/theme-provider.tsx
+"use client"
+
+import * as React from "react"
+import { ThemeProvider as NextThemesProvider } from "next-themes"
+import { type ThemeProviderProps } from "next-themes/dist/types"
+
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+}
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/output.txt (Unsupported)
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/landing-content.tsx
+"use client";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+const testimonials = [
+  {
+    name: "Joel",
+    avatar: "J",
+    title: "Software Engineer",
+    description: "This is the best application I've ever used!",
+  },
+  {
+    name: "Antonio",
+    avatar: "A",
+    title: "Designer",
+    description: "I use this daily for generating new photos!",
+  },
+  {
+    name: "Mark",
+    avatar: "M",
+    title: "CEO",
+    description: "This app has changed my life, cannot imagine working without it!",
+  },
+  {
+    name: "Mary",
+    avatar: "M",
+    title: "CFO",
+    description: "The best in class, definitely worth the premium subscription!",
+  },
+];
+
+export const LandingContent = () => {
+  return (
+    <div className="px-10 pb-20">
+      <h2 className="text-center text-4xl text-white font-extrabold mb-10">Testimonials</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {testimonials.map((item) => (
+          <Card key={item.description} className="bg-[#192339] border-none text-white">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-x-2">
+                <div>
+                  <p className="text-lg">{item.name}</p>
+                  <p className="text-zinc-400 text-sm">{item.title}</p>
+                </div>
+              </CardTitle>
+              <CardContent className="pt-4 px-0">
+                {item.description}
+              </CardContent>
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/pro-modal.tsx
+"use client";
+
+import axios from "axios";
+import { useState } from "react";
+import { Check, Zap } from "lucide-react";
+import { toast } from "react-hot-toast";
+
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useProModal } from "@/hooks/use-pro-modal";
+import { tools } from "@/constants";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+
+export const ProModal = () => {
+  const proModal = useProModal();
+  const [loading, setLoading] = useState(false);
+
+  const onSubscribe = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/api/stripe");
+
+      window.location.href = response.data.url;
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <Dialog open={proModal.isOpen} onOpenChange={proModal.onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="flex justify-center items-center flex-col gap-y-4 pb-2">
+            <div className="flex items-center gap-x-2 font-bold text-xl">
+              Upgrade to Genius
+              <Badge variant="premium" className="uppercase text-sm py-1">
+                pro
+              </Badge>
+            </div>
+          </DialogTitle>
+          <DialogDescription className="text-center pt-2 space-y-2 text-zinc-900 font-medium">
+            {tools.map((tool) => (
+              <Card key={tool.href} className="p-3 border-black/5 flex items-center justify-between">
+                <div className="flex items-center gap-x-4">
+                  <div className={cn("p-2 w-fit rounded-md", tool.bgColor)}>
+                    <tool.icon className={cn("w-6 h-6", tool.color)} />
+                  </div>
+                  <div className="font-semibold text-sm">
+                    {tool.label}
+                  </div>
+                </div>
+                <Check className="text-primary w-5 h-5" />
+              </Card>
+            ))}
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button disabled={loading} onClick={onSubscribe} size="lg" variant="premium" className="w-full">
+            Upgrade
+            <Zap className="w-4 h-4 ml-2 fill-white" />
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/loader.tsx
+import Image from "next/image"
+
+export const Loader = () => {
+  return (
+    <div className="h-full flex flex-col gap-y-4 items-center justify-center">
+      <div className="w-10 h-10 relative animate-spin">
+        <Image
+          alt="Logo"
+          src="/logo.png"
+          fill
+        />
+      </div>
+      <p className="text-sm text-muted-foreground">
+        Genius is thinking...
+      </p>
+    </div>
+  );
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/bot-avatar.tsx
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+
+export const BotAvatar = () => {
+  return (
+    <Avatar className="h-8 w-8">
+      <AvatarImage className="p-1" src="/logo.png" />
+    </Avatar>
+  );
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/landing-hero.tsx
+"use client";
+
+import TypewriterComponent from "typewriter-effect";
+import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
+
+import { Button } from "@/components/ui/button";
+
+export const LandingHero = () => {
+  const { isSignedIn } = useAuth();
+
+  return (
+    <div className="text-white font-bold py-36 text-center space-y-5">
+      <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl space-y-5 font-extrabold">
+        <h1>The Best AI Tool for</h1>
+        <div className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+          <TypewriterComponent
+            options={{
+              strings: [
+                "Chatbot.",
+                "Photo Generation.",
+                "Blog Writing.",
+                "Mail Writing."
+              ],
+              autoStart: true,
+              loop: true,
+            }}
+          />
+        </div>
+      </div>
+      <div className="text-sm md:text-xl font-light text-zinc-400">
+        Create content using AI 10x faster.
+      </div>
+      <div>
+        <Link href={isSignedIn ? "/dashboard" : "/sign-up"}>
+          <Button variant="premium" className="md:text-lg p-4 md:p-6 rounded-full font-semibold">
+            Start Generating For Free
+          </Button>
+        </Link>
+      </div>
+      <div className="text-zinc-400 text-xs md:text-sm font-normal">
+        No credit card required.
+      </div>
+    </div>
+  );
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/crisp-provider.tsx
+"use client";
+
+import { CrispChat } from "@/components/crisp-chat";
+
+export const CrispProvider = () => {
+  return <CrispChat />
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/heading.tsx
+import { Icon } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+
+interface HeadingProps {
+  title: string;
+  description: string;
+  icon: Icon;
+  iconColor?: string;
+  bgColor?: string;
+}
+
+export const Heading = ({
+  title,
+  description,
+  icon: Icon,
+  iconColor,
+  bgColor,
+}: HeadingProps) => {
+  return (
+    <>
+      <div className="px-4 lg:px-8 flex items-center gap-x-3 mb-8">
+        <div className={cn("p-2 w-fit rounded-md", bgColor)}>
+          <Icon className={cn("w-10 h-10", iconColor)} />
+        </div>
+        <div>
+          <h2 className="text-3xl font-bold">{title}</h2>
+          <p className="text-sm text-muted-foreground">
+            {description}
+          </p>
+        </div>
+      </div>
+    </>
+  );
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/toaster-provider.tsx
+"use client";
+
+import { Toaster } from "react-hot-toast"
+
+export const ToasterProvider = () => {
+  return <Toaster />
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/select.tsx
+"use client"
+
+import * as React from "react"
+import * as SelectPrimitive from "@radix-ui/react-select"
+import { Check, ChevronDown } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+
+const Select = SelectPrimitive.Root
+
+const SelectGroup = SelectPrimitive.Group
+
+const SelectValue = SelectPrimitive.Value
+
+const SelectTrigger = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
+>(({ className, children, ...props }, ref) => (
+  <SelectPrimitive.Trigger
+    ref={ref}
+    className={cn(
+      "flex h-10 w-full items-center justify-between rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+      className
+    )}
+    {...props}
+  >
+    {children}
+    <SelectPrimitive.Icon asChild>
+      <ChevronDown className="h-4 w-4 opacity-50" />
+    </SelectPrimitive.Icon>
+  </SelectPrimitive.Trigger>
+))
+SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
+
+const SelectContent = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
+>(({ className, children, position = "popper", ...props }, ref) => (
+  <SelectPrimitive.Portal>
+    <SelectPrimitive.Content
+      ref={ref}
+      className={cn(
+        "relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        position === "popper" &&
+          "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
+        className
+      )}
+      position={position}
+      {...props}
+    >
+      <SelectPrimitive.Viewport
+        className={cn(
+          "p-1",
+          position === "popper" &&
+            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+        )}
+      >
+        {children}
+      </SelectPrimitive.Viewport>
+    </SelectPrimitive.Content>
+  </SelectPrimitive.Portal>
+))
+SelectContent.displayName = SelectPrimitive.Content.displayName
+
+const SelectLabel = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Label>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>
+>(({ className, ...props }, ref) => (
+  <SelectPrimitive.Label
+    ref={ref}
+    className={cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className)}
+    {...props}
+  />
+))
+SelectLabel.displayName = SelectPrimitive.Label.displayName
+
+const SelectItem = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
+>(({ className, children, ...props }, ref) => (
+  <SelectPrimitive.Item
+    ref={ref}
+    className={cn(
+      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      className
+    )}
+    {...props}
+  >
+    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <SelectPrimitive.ItemIndicator>
+        <Check className="h-4 w-4" />
+      </SelectPrimitive.ItemIndicator>
+    </span>
+
+    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+  </SelectPrimitive.Item>
+))
+SelectItem.displayName = SelectPrimitive.Item.displayName
+
+const SelectSeparator = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Separator>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>
+>(({ className, ...props }, ref) => (
+  <SelectPrimitive.Separator
+    ref={ref}
+    className={cn("-mx-1 my-1 h-px bg-muted", className)}
+    {...props}
+  />
+))
+SelectSeparator.displayName = SelectPrimitive.Separator.displayName
+
+export {
+  Select,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+}
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/sheet.tsx
+"use client"
+
+import * as React from "react"
+import * as SheetPrimitive from "@radix-ui/react-dialog"
+import { cva, type VariantProps } from "class-variance-authority"
+import { X } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+
+const Sheet = SheetPrimitive.Root
+
+const SheetTrigger = SheetPrimitive.Trigger
+
+const SheetClose = SheetPrimitive.Close
+
+const SheetPortal = ({
+  className,
+  ...props
+}: SheetPrimitive.DialogPortalProps) => (
+  <SheetPrimitive.Portal className={cn(className)} {...props} />
+)
+SheetPortal.displayName = SheetPrimitive.Portal.displayName
+
+const SheetOverlay = React.forwardRef<
+  React.ElementRef<typeof SheetPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <SheetPrimitive.Overlay
+    className={cn(
+      "fixed inset-0 z-50 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      className
+    )}
+    {...props}
+    ref={ref}
+  />
+))
+SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
+
+const sheetVariants = cva(
+  "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+  {
+    variants: {
+      side: {
+        top: "inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
+        bottom:
+          "inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
+        left: "inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
+        right:
+          "inset-y-0 right-0 h-full w-3/4  border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
+      },
+    },
+    defaultVariants: {
+      side: "right",
+    },
+  }
+)
+
+interface SheetContentProps
+  extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
+    VariantProps<typeof sheetVariants> {}
+
+const SheetContent = React.forwardRef<
+  React.ElementRef<typeof SheetPrimitive.Content>,
+  SheetContentProps
+>(({ side = "right", className, children, ...props }, ref) => (
+  <SheetPortal>
+    <SheetOverlay />
+    <SheetPrimitive.Content
+      ref={ref}
+      className={cn(sheetVariants({ side }), className)}
+      {...props}
+    >
+      {children}
+      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+        <X className="h-4 w-4" />
+        <span className="sr-only">Close</span>
+      </SheetPrimitive.Close>
+    </SheetPrimitive.Content>
+  </SheetPortal>
+))
+SheetContent.displayName = SheetPrimitive.Content.displayName
+
+const SheetHeader = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      "flex flex-col space-y-2 text-center sm:text-left",
+      className
+    )}
+    {...props}
+  />
+)
+SheetHeader.displayName = "SheetHeader"
+
+const SheetFooter = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+      className
+    )}
+    {...props}
+  />
+)
+SheetFooter.displayName = "SheetFooter"
+
+const SheetTitle = React.forwardRef<
+  React.ElementRef<typeof SheetPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <SheetPrimitive.Title
+    ref={ref}
+    className={cn("text-lg font-semibold text-foreground", className)}
+    {...props}
+  />
+))
+SheetTitle.displayName = SheetPrimitive.Title.displayName
+
+const SheetDescription = React.forwardRef<
+  React.ElementRef<typeof SheetPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <SheetPrimitive.Description
+    ref={ref}
+    className={cn("text-sm text-muted-foreground", className)}
+    {...props}
+  />
+))
+SheetDescription.displayName = SheetPrimitive.Description.displayName
+
+export {
+  Sheet,
+  SheetTrigger,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+}
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/dialog.tsx
+"use client"
+
+import * as React from "react"
+import * as DialogPrimitive from "@radix-ui/react-dialog"
+import { X } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+
+const Dialog = DialogPrimitive.Root
+
+const DialogTrigger = DialogPrimitive.Trigger
+
+const DialogPortal = ({
+  className,
+  ...props
+}: DialogPrimitive.DialogPortalProps) => (
+  <DialogPrimitive.Portal className={cn(className)} {...props} />
+)
+DialogPortal.displayName = DialogPrimitive.Portal.displayName
+
+const DialogOverlay = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Overlay
+    ref={ref}
+    className={cn(
+      "fixed inset-0 z-50 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      className
+    )}
+    {...props}
+  />
+))
+DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
+
+const DialogContent = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <DialogPortal>
+    <DialogOverlay />
+    <DialogPrimitive.Content
+      ref={ref}
+      className={cn(
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg md:w-full",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+        <X className="h-4 w-4" />
+        <span className="sr-only">Close</span>
+      </DialogPrimitive.Close>
+    </DialogPrimitive.Content>
+  </DialogPortal>
+))
+DialogContent.displayName = DialogPrimitive.Content.displayName
+
+const DialogHeader = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      "flex flex-col space-y-1.5 text-center sm:text-left",
+      className
+    )}
+    {...props}
+  />
+)
+DialogHeader.displayName = "DialogHeader"
+
+const DialogFooter = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+      className
+    )}
+    {...props}
+  />
+)
+DialogFooter.displayName = "DialogFooter"
+
+const DialogTitle = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Title
+    ref={ref}
+    className={cn(
+      "text-lg font-semibold leading-none tracking-tight",
+      className
+    )}
+    {...props}
+  />
+))
+DialogTitle.displayName = DialogPrimitive.Title.displayName
+
+const DialogDescription = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Description
+    ref={ref}
+    className={cn("text-sm text-muted-foreground", className)}
+    {...props}
+  />
+))
+DialogDescription.displayName = DialogPrimitive.Description.displayName
+
+export {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+}
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/empty.tsx
+import Image from "next/image";
+
+
+interface EmptyProps {
+  label: string;
+}
+
+export const Empty = ({
+  label
+}: EmptyProps) => {
+  return (
+    <div className="h-full p-20 flex flex-col items-center justify-center">
+      <div className="relative h-72 w-72">
+        <Image src="/empty.png" fill alt="Empty" />
+      </div>
+      <p className="text-muted-foreground text-sm text-center">
+        {label}
+      </p>
+    </div>
+  );
+};
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/command.tsx
+"use client"
+
+import * as React from "react"
+import { DialogProps } from "@radix-ui/react-dialog"
+import { Command as CommandPrimitive } from "cmdk"
+import { Search } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+
+const Command = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive>
+>(({ className, ...props }, ref) => (
+  <CommandPrimitive
+    ref={ref}
+    className={cn(
+      "flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground",
+      className
+    )}
+    {...props}
+  />
+))
+Command.displayName = CommandPrimitive.displayName
+
+interface CommandDialogProps extends DialogProps {}
+
+const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
+  return (
+    <Dialog {...props}>
+      <DialogContent className="overflow-hidden p-0 shadow-lg">
+        <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
+          {children}
+        </Command>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+const CommandInput = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive.Input>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
+>(({ className, ...props }, ref) => (
+  <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
+    <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+    <CommandPrimitive.Input
+      ref={ref}
+      className={cn(
+        "flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+        className
+      )}
+      {...props}
+    />
+  </div>
+))
+
+CommandInput.displayName = CommandPrimitive.Input.displayName
+
+const CommandList = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive.List>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
+>(({ className, ...props }, ref) => (
+  <CommandPrimitive.List
+    ref={ref}
+    className={cn("max-h-[300px] overflow-y-auto overflow-x-hidden", className)}
+    {...props}
+  />
+))
+
+CommandList.displayName = CommandPrimitive.List.displayName
+
+const CommandEmpty = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive.Empty>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>
+>((props, ref) => (
+  <CommandPrimitive.Empty
+    ref={ref}
+    className="py-6 text-center text-sm"
+    {...props}
+  />
+))
+
+CommandEmpty.displayName = CommandPrimitive.Empty.displayName
+
+const CommandGroup = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive.Group>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Group>
+>(({ className, ...props }, ref) => (
+  <CommandPrimitive.Group
+    ref={ref}
+    className={cn(
+      "overflow-hidden p-1 text-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground",
+      className
+    )}
+    {...props}
+  />
+))
+
+CommandGroup.displayName = CommandPrimitive.Group.displayName
+
+const CommandSeparator = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive.Separator>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Separator>
+>(({ className, ...props }, ref) => (
+  <CommandPrimitive.Separator
+    ref={ref}
+    className={cn("-mx-1 h-px bg-border", className)}
+    {...props}
+  />
+))
+CommandSeparator.displayName = CommandPrimitive.Separator.displayName
+
+const CommandItem = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
+>(({ className, ...props }, ref) => (
+  <CommandPrimitive.Item
+    ref={ref}
+    className={cn(
+      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      className
+    )}
+    {...props}
+  />
+))
+
+CommandItem.displayName = CommandPrimitive.Item.displayName
+
+const CommandShortcut = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLSpanElement>) => {
+  return (
+    <span
+      className={cn(
+        "ml-auto text-xs tracking-widest text-muted-foreground",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+CommandShortcut.displayName = "CommandShortcut"
+
+export {
+  Command,
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandShortcut,
+  CommandSeparator,
+}
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/card.tsx
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+
+const Card = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      className
+    )}
+    {...props}
+  />
+))
+Card.displayName = "Card"
+
+const CardHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col space-y-1.5 p-6", className)}
+    {...props}
+  />
+))
+CardHeader.displayName = "CardHeader"
+
+const CardTitle = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    className={cn(
+      "text-2xl font-semibold leading-none tracking-tight",
+      className
+    )}
+    {...props}
+  />
+))
+CardTitle.displayName = "CardTitle"
+
+const CardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("text-sm text-muted-foreground", className)}
+    {...props}
+  />
+))
+CardDescription.displayName = "CardDescription"
+
+const CardContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+))
+CardContent.displayName = "CardContent"
+
+const CardFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(" flex items-center p-6 pt-0", className)}
+    {...props}
+  />
+))
+CardFooter.displayName = "CardFooter"
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/dropdown-menu.tsx
+"use client"
+
+import * as React from "react"
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
+import { Check, ChevronRight, Circle } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+
+const DropdownMenu = DropdownMenuPrimitive.Root
+
+const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
+
+const DropdownMenuGroup = DropdownMenuPrimitive.Group
+
+const DropdownMenuPortal = DropdownMenuPrimitive.Portal
+
+const DropdownMenuSub = DropdownMenuPrimitive.Sub
+
+const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
+
+const DropdownMenuSubTrigger = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.SubTrigger>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & {
+    inset?: boolean
+  }
+>(({ className, inset, children, ...props }, ref) => (
+  <DropdownMenuPrimitive.SubTrigger
+    ref={ref}
+    className={cn(
+      "flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent data-[state=open]:bg-accent",
+      inset && "pl-8",
+      className
+    )}
+    {...props}
+  >
+    {children}
+    <ChevronRight className="ml-auto h-4 w-4" />
+  </DropdownMenuPrimitive.SubTrigger>
+))
+DropdownMenuSubTrigger.displayName =
+  DropdownMenuPrimitive.SubTrigger.displayName
+
+const DropdownMenuSubContent = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.SubContent>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent>
+>(({ className, ...props }, ref) => (
+  <DropdownMenuPrimitive.SubContent
+    ref={ref}
+    className={cn(
+      "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+      className
+    )}
+    {...props}
+  />
+))
+DropdownMenuSubContent.displayName =
+  DropdownMenuPrimitive.SubContent.displayName
+
+const DropdownMenuContent = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
+>(({ className, sideOffset = 4, ...props }, ref) => (
+  <DropdownMenuPrimitive.Portal>
+    <DropdownMenuPrimitive.Content
+      ref={ref}
+      sideOffset={sideOffset}
+      className={cn(
+        "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        className
+      )}
+      {...props}
+    />
+  </DropdownMenuPrimitive.Portal>
+))
+DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
+
+const DropdownMenuItem = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
+    inset?: boolean
+  }
+>(({ className, inset, ...props }, ref) => (
+  <DropdownMenuPrimitive.Item
+    ref={ref}
+    className={cn(
+      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      inset && "pl-8",
+      className
+    )}
+    {...props}
+  />
+))
+DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName
+
+const DropdownMenuCheckboxItem = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.CheckboxItem>
+>(({ className, children, checked, ...props }, ref) => (
+  <DropdownMenuPrimitive.CheckboxItem
+    ref={ref}
+    className={cn(
+      "relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      className
+    )}
+    checked={checked}
+    {...props}
+  >
+    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <DropdownMenuPrimitive.ItemIndicator>
+        <Check className="h-4 w-4" />
+      </DropdownMenuPrimitive.ItemIndicator>
+    </span>
+    {children}
+  </DropdownMenuPrimitive.CheckboxItem>
+))
+DropdownMenuCheckboxItem.displayName =
+  DropdownMenuPrimitive.CheckboxItem.displayName
+
+const DropdownMenuRadioItem = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.RadioItem>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem>
+>(({ className, children, ...props }, ref) => (
+  <DropdownMenuPrimitive.RadioItem
+    ref={ref}
+    className={cn(
+      "relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      className
+    )}
+    {...props}
+  >
+    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <DropdownMenuPrimitive.ItemIndicator>
+        <Circle className="h-2 w-2 fill-current" />
+      </DropdownMenuPrimitive.ItemIndicator>
+    </span>
+    {children}
+  </DropdownMenuPrimitive.RadioItem>
+))
+DropdownMenuRadioItem.displayName = DropdownMenuPrimitive.RadioItem.displayName
+
+const DropdownMenuLabel = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Label>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & {
+    inset?: boolean
+  }
+>(({ className, inset, ...props }, ref) => (
+  <DropdownMenuPrimitive.Label
+    ref={ref}
+    className={cn(
+      "px-2 py-1.5 text-sm font-semibold",
+      inset && "pl-8",
+      className
+    )}
+    {...props}
+  />
+))
+DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName
+
+const DropdownMenuSeparator = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Separator>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
+>(({ className, ...props }, ref) => (
+  <DropdownMenuPrimitive.Separator
+    ref={ref}
+    className={cn("-mx-1 my-1 h-px bg-muted", className)}
+    {...props}
+  />
+))
+DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName
+
+const DropdownMenuShortcut = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLSpanElement>) => {
+  return (
+    <span
+      className={cn("ml-auto text-xs tracking-widest opacity-60", className)}
+      {...props}
+    />
+  )
+}
+DropdownMenuShortcut.displayName = "DropdownMenuShortcut"
+
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuGroup,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuRadioGroup,
+}
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/form.tsx
+import * as React from "react"
+import * as LabelPrimitive from "@radix-ui/react-label"
+import { Slot } from "@radix-ui/react-slot"
+import {
+  Controller,
+  ControllerProps,
+  FieldPath,
+  FieldValues,
+  FormProvider,
+  useFormContext,
+} from "react-hook-form"
+
+import { cn } from "@/lib/utils"
+import { Label } from "@/components/ui/label"
+
+const Form = FormProvider
+
+type FormFieldContextValue<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+> = {
+  name: TName
+}
+
+const FormFieldContext = React.createContext<FormFieldContextValue>(
+  {} as FormFieldContextValue
+)
+
+const FormField = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+>({
+  ...props
+}: ControllerProps<TFieldValues, TName>) => {
+  return (
+    <FormFieldContext.Provider value={{ name: props.name }}>
+      <Controller {...props} />
+    </FormFieldContext.Provider>
+  )
+}
+
+const useFormField = () => {
+  const fieldContext = React.useContext(FormFieldContext)
+  const itemContext = React.useContext(FormItemContext)
+  const { getFieldState, formState } = useFormContext()
+
+  const fieldState = getFieldState(fieldContext.name, formState)
+
+  if (!fieldContext) {
+    throw new Error("useFormField should be used within <FormField>")
+  }
+
+  const { id } = itemContext
+
+  return {
+    id,
+    name: fieldContext.name,
+    formItemId: `${id}-form-item`,
+    formDescriptionId: `${id}-form-item-description`,
+    formMessageId: `${id}-form-item-message`,
+    ...fieldState,
+  }
+}
+
+type FormItemContextValue = {
+  id: string
+}
+
+const FormItemContext = React.createContext<FormItemContextValue>(
+  {} as FormItemContextValue
+)
+
+const FormItem = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
+  const id = React.useId()
+
+  return (
+    <FormItemContext.Provider value={{ id }}>
+      <div ref={ref} className={cn("space-y-2", className)} {...props} />
+    </FormItemContext.Provider>
+  )
+})
+FormItem.displayName = "FormItem"
+
+const FormLabel = React.forwardRef<
+  React.ElementRef<typeof LabelPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
+>(({ className, ...props }, ref) => {
+  const { error, formItemId } = useFormField()
+
+  return (
+    <Label
+      ref={ref}
+      className={cn(error && "text-destructive", className)}
+      htmlFor={formItemId}
+      {...props}
+    />
+  )
+})
+FormLabel.displayName = "FormLabel"
+
+const FormControl = React.forwardRef<
+  React.ElementRef<typeof Slot>,
+  React.ComponentPropsWithoutRef<typeof Slot>
+>(({ ...props }, ref) => {
+  const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
+
+  return (
+    <Slot
+      ref={ref}
+      id={formItemId}
+      aria-describedby={
+        !error
+          ? `${formDescriptionId}`
+          : `${formDescriptionId} ${formMessageId}`
+      }
+      aria-invalid={!!error}
+      {...props}
+    />
+  )
+})
+FormControl.displayName = "FormControl"
+
+const FormDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => {
+  const { formDescriptionId } = useFormField()
+
+  return (
+    <p
+      ref={ref}
+      id={formDescriptionId}
+      className={cn("text-sm text-muted-foreground", className)}
+      {...props}
+    />
+  )
+})
+FormDescription.displayName = "FormDescription"
+
+const FormMessage = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, children, ...props }, ref) => {
+  const { error, formMessageId } = useFormField()
+  const body = error ? String(error?.message) : children
+
+  if (!body) {
+    return null
+  }
+
+  return (
+    <p
+      ref={ref}
+      id={formMessageId}
+      className={cn("text-sm font-medium text-destructive", className)}
+      {...props}
+    >
+      {body}
+    </p>
+  )
+})
+FormMessage.displayName = "FormMessage"
+
+export {
+  useFormField,
+  Form,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+  FormField,
+}
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/separator.tsx
+"use client"
+
+import * as React from "react"
+import * as SeparatorPrimitive from "@radix-ui/react-separator"
+
+import { cn } from "@/lib/utils"
+
+const Separator = React.forwardRef<
+  React.ElementRef<typeof SeparatorPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>
+>(
+  (
+    { className, orientation = "horizontal", decorative = true, ...props },
+    ref
+  ) => (
+    <SeparatorPrimitive.Root
+      ref={ref}
+      decorative={decorative}
+      orientation={orientation}
+      className={cn(
+        "shrink-0 bg-border",
+        orientation === "horizontal" ? "h-[1px] w-full" : "h-full w-[1px]",
+        className
+      )}
+      {...props}
+    />
+  )
+)
+Separator.displayName = SeparatorPrimitive.Root.displayName
+
+export { Separator }
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/button.tsx
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        premium: "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white border-0",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button"
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+)
+Button.displayName = "Button"
+
+export { Button, buttonVariants }
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/input.tsx
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, ...props }, ref) => {
+    return (
+      <input
+        type={type}
+        className={cn(
+          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          className
+        )}
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+)
+Input.displayName = "Input"
+
+export { Input }
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/badge.tsx
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const badgeVariants = cva(
+  "inline-flex items-center rounded-full border px-2.5 py-0.25 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  {
+    variants: {
+      variant: {
+        default:
+          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+        secondary:
+          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        destructive:
+          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+        outline: "text-foreground",
+        premium: "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-primary-foreground border-0"
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+export interface BadgeProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof badgeVariants> {}
+
+function Badge({ className, variant, ...props }: BadgeProps) {
+  return (
+    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+  )
+}
+
+export { Badge, badgeVariants }
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/progress.tsx
+"use client"
+
+import * as React from "react"
+import * as ProgressPrimitive from "@radix-ui/react-progress"
+
+import { cn } from "@/lib/utils"
+
+const Progress = React.forwardRef<
+  React.ElementRef<typeof ProgressPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
+>(({ className, value, ...props }, ref) => (
+  <ProgressPrimitive.Root
+    ref={ref}
+    className={cn(
+      "relative h-4 w-full overflow-hidden rounded-full bg-secondary",
+      className
+    )}
+    {...props}
+  >
+    <ProgressPrimitive.Indicator
+      className="h-full w-full flex-1 bg-primary transition-all"
+      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+    />
+  </ProgressPrimitive.Root>
+))
+Progress.displayName = ProgressPrimitive.Root.displayName
+
+export { Progress }
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/avatar.tsx
+"use client"
+
+import * as React from "react"
+import * as AvatarPrimitive from "@radix-ui/react-avatar"
+
+import { cn } from "@/lib/utils"
+
+const Avatar = React.forwardRef<
+  React.ElementRef<typeof AvatarPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>
+>(({ className, ...props }, ref) => (
+  <AvatarPrimitive.Root
+    ref={ref}
+    className={cn(
+      "relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full",
+      className
+    )}
+    {...props}
+  />
+))
+Avatar.displayName = AvatarPrimitive.Root.displayName
+
+const AvatarImage = React.forwardRef<
+  React.ElementRef<typeof AvatarPrimitive.Image>,
+  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
+>(({ className, ...props }, ref) => (
+  <AvatarPrimitive.Image
+    ref={ref}
+    className={cn("aspect-square h-full w-full", className)}
+    {...props}
+  />
+))
+AvatarImage.displayName = AvatarPrimitive.Image.displayName
+
+const AvatarFallback = React.forwardRef<
+  React.ElementRef<typeof AvatarPrimitive.Fallback>,
+  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
+>(({ className, ...props }, ref) => (
+  <AvatarPrimitive.Fallback
+    ref={ref}
+    className={cn(
+      "flex h-full w-full items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white",
+      className
+    )}
+    {...props}
+  />
+))
+AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName
+
+export { Avatar, AvatarImage, AvatarFallback }
+
+
+File: /home/consistent500/Desktop/New Saas/next13-ai-saas4/components/ui/label.tsx
+"use client"
+
+import * as React from "react"
+import * as LabelPrimitive from "@radix-ui/react-label"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const labelVariants = cva(
+  "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+)
+
+const Label = React.forwardRef<
+  React.ElementRef<typeof LabelPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
+    VariantProps<typeof labelVariants>
+>(({ className, ...props }, ref) => (
+  <LabelPrimitive.Root
+    ref={ref}
+    className={cn(labelVariants(), className)}
+    {...props}
+  />
+))
+Label.displayName = LabelPrimitive.Root.displayName
+
+export { Label }
+
+

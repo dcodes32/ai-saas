@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { ChatCompletionRequestMessage } from "openai";
 
-import { BotAvatar } from "@/components/bot-avatar";
+
 import { Heading } from "@/components/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,7 +42,7 @@ const ConversationPage = () => {
       const userMessage: ChatCompletionRequestMessage = { role: "user", content: values.prompt };
       const newMessages = [...messages, userMessage];
       
-      const response = await axios.post('/api/conversation', { messages: newMessages });
+      const response = await axios.post('/api/Conversación', { messages: newMessages });
       setMessages((current) => [...current, userMessage, response.data]);
       
       form.reset();
@@ -60,7 +60,7 @@ const ConversationPage = () => {
   return ( 
     <div>
       <Heading
-        title="Conversation"
+        title="Conversación"
         description="Our most advanced conversation model."
         icon={MessageSquare}
         iconColor="text-violet-500"
@@ -123,7 +123,7 @@ const ConversationPage = () => {
                   message.role === "user" ? "bg-white border border-black/10" : "bg-muted",
                 )}
               >
-                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                {message.role === "user" ? <UserAvatar /> : null}
                 <p className="text-sm">
                   {message.content}
                 </p>
