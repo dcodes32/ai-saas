@@ -67,30 +67,30 @@ const CodePage: React.FC = () => {
     return (
       <div style={{ color: '#333', padding: '40px', fontFamily: 'Arial, sans-serif' }}>
         <h1 style={{ color: '#ff4500', textAlign: 'center', fontSize: '36px', marginBottom: '20px' }}>
-          🚀 Unleash the Power of Language Models with <span style={{ fontStyle: 'italic' }}>Superprompts!</span> 🚀
+          🚀 Elevate Your ChatGPT Experience with <span style={{ fontStyle: 'italic' }}>Superprompts!</span> 🚀
         </h1>
         <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
-          <strong style={{ fontSize: '24px', color: '#ff4500' }}>Why Superprompts?</strong> <span style={{ color: '#228B22', fontSize: '20px' }}>Superprompts</span> isn't just another tool; it's a <strong style={{ fontSize: '24px' }}>revolution!</strong> In the world of language model interactions, mastering prompt engineering is paramount. Superprompts empowers you with the skills to unlock the full potential of large language models.
+          <strong style={{ fontSize: '24px', color: '#ff4500' }}>Unlock Boundless Potential:</strong> Superprompts stand not merely as prompts but as finely-forged keys, meticulously crafted to unlock the boundless potentials hidden within the algorithms of ChatGPT. It's a transformative experience, akin to transitioning from a flickering candlelight to the unbridled brilliance of a raging bonfire in the digital realm of language and interaction.
         </p>
         <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
-          🌐 <strong style={{ fontSize: '24px', color: '#228B22' }}>Global Reach with Local Feel:</strong> Imagine having the ability to engage in conversations that are not just accurate but deeply connected to local linguistic nuances. Superprompts bridges the gap between language models and human expression, ensuring a global reach with a local feel.
+          🌐 <strong style={{ fontSize: '24px', color: '#228B22' }}>A Symphony of Interaction:</strong> Superprompts seamlessly turn mere interactions into vibrant conversations, imbuing the AI with a deepened comprehension of your unique needs and intricate intents. With Superprompts, each engagement evolves into a symphony of intellectual exchange and precision, reminiscent of a dance between understanding and response.
         </p>
         <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
-          💡 <strong style={{ fontSize: '24px', color: '#ff4500' }}>Infinite Possibilities:</strong> Prompt engineering is akin to wielding a magic wand. Whether you're crafting content, generating ideas, or developing applications, Superprompts opens the door to limitless possibilities. Dive into the art of creating prompts that spark creativity and watch as uncharted potentials unfold.
+          💡 <strong style={{ fontSize: '24px', color: '#ff4500' }}>Precision Crafted Engagements:</strong> Like a seasoned cartographer crafting a map, Superprompts are designed with insightful precision, loaded with context, guiding ChatGPT through the labyrinth of human inquiry with finesse. It is through these meticulously designed prompts that ChatGPT can unfurl its capabilities, offering not just responses but solutions, insights, and a depth of engagement hitherto unexplored.
         </p>
         <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
-          ⚡️ <strong style={{ fontSize: '24px', color: '#ff4500' }}>Speed and Efficiency:</strong> Prompt engineering isn't just about creativity; it's about optimization. Superprompts is your partner in achieving unmatched speed and efficiency. Each request is meticulously fine-tuned to ensure you receive the fastest and most accurate responses every time.
+          ⚡️ <strong style={{ fontSize: '24px', color: '#ff4500' }}>Empower Your Creative Genius:</strong> With Superprompts, you command ChatGPT to perform a myriad of tasks with unparalleled accuracy and creativity, from drafting code and composing symphonies to brainstorming avant-garde marketing strategies and simulating fictional dialogues that resonate with vibrancy and imagination.
         </p>
         <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
-          🌟 <strong style={{ fontSize: '24px', color: '#ff4500' }}>Chain of Thought Prompting:</strong> Take your prompt engineering skills to the next level with techniques like chain of thought prompting. This powerful method allows you to guide the language model's responses step by step, resulting in more coherent and context-aware output. It's like having a conversation with the model, steering it towards your desired outcome.
+          🌟 <strong style={{ fontSize: '24px', color: '#ff4500' }}>Master the Art:</strong> Superprompts epitomize the pinnacle of prompt engineering. They represent a harmonious marriage of precision and creativity, serving as the conduit through which the symphonic potential of ChatGPT is not just realized but maximized, leading to content generation that is nothing short of extraordinary.
         </p>
         <p style={{ fontSize: '20px', lineHeight: '1.6', textAlign: 'center', marginTop: '40px' }}>
-          Ready to embark on a transformative journey where technology meets creativity? With Superprompts, you'll witness how prompt engineering can amplify the capabilities of large language models. 
+          Ready to transition from the mundane to the extraordinary? To not just interact but engage with the depth and breadth of ChatGPT’s capabilities? 
           <button 
             onClick={handleSubscribeClick} 
             disabled={loading} 
-            style={{ color: '#ff4500', textDecoration: 'underline', fontWeight: 'bold', fontSize: '24px', cursor: 'pointer', background: 'none', border: 'none' }}>Subscribe Now!</button> 
-          and take the first step into the future of language model interaction with <span style={{ color: '#228B22', fontSize: '24px' }}>Superprompts!</span>
+            style={{ color: '#ff4500', textDecoration: 'underline', fontWeight: 'bold', fontSize: '24px', cursor: 'pointer', background: 'none', border: 'none' }}>Embark on the Journey with Superprompts!</button> 
+          and witness the dawn of a new era in AI-driven language model interaction.
         </p>
       </div>
     );
