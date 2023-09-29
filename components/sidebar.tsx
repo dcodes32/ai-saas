@@ -39,7 +39,7 @@ const routes = [
   {
     label: 'Promoción de evento',
     icon: MessageSquare,
-    href: 'Promoción%20de%20evento',
+    href: 'Promocion%20de%20evento',
     color: "text-violet-500",
   }, 
   {
@@ -57,7 +57,7 @@ const routes = [
   {
     label: 'Campaña Publicitaria',
     icon: MessageSquare,
-    href: 'Campaña%20Publicitaria',
+    href: 'Campana%20Publicitaria',
     color: "text-violet-500",
   }, 
   {

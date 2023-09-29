@@ -29,7 +29,7 @@ export const tools = [
     icon: MessageSquare,
     color: "text-orange-700",
     bgColor: "bg-orange-700/10",
-    href: '/Promoción%20de%20evento',
+    href: '/Promocion%20de%20evento',
   },
   {
     label: 'Producto progresivo',
@@ -50,7 +50,7 @@ export const tools = [
     icon: MessageSquare,
     color: "text-green-700",
     bgColor: "bg-green-700/10",
-    href: '/Campaña%20Publicitaria',
+    href: '/Campana%20Publicitaria',
   },
   {
     label: 'testing',

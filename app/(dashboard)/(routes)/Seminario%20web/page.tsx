@@ -5,27 +5,22 @@ import * as z from "zod";
 import axios from "axios";
 import { Code } from "lucide-react";
 import { useForm } from "react-hook-form";
-
 import { toast } from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import { useRouter } from "next/navigation";
-import { ChatCompletionRequestMessage } from "openai";
-
-
 import { Heading } from "@/components/heading";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { Loader } from "@/components/loader";
 import { UserAvatar } from "@/components/user-avatar";
-import { Empty } from "@/components/ui/empty";
+
 import { useProModal } from "@/hooks/use-pro-modal";
 
 import { formSchema } from "./constants";
 
-import React, { useState, useRef } from 'react';
+import { checkSubscription } from "@/lib/subscription";
+
+import React, { useState, useRef, useEffect } from 'react';
 
 interface Prompt {
   title: string;
@@ -33,12 +28,73 @@ interface Prompt {
 }
 
 const CodePage: React.FC = () => {
+  const [hasSubscription, setHasSubscription] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false); 
   const [expandedPromptIndex, setExpandedPromptIndex] = useState<number | null>(null);
   const [userInputs, setUserInputs] = useState<{ [key: string]: string }[]>([]);
   const [generatedPrompt, setGeneratedPrompt] = useState<string | null>(null);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
   const [showInputs, setShowInputs] = useState<boolean>(false);
 
+  useEffect(() => {
+    async function checkUserSubscription() {
+      try {
+        const response = await fetch('/api/check-subscription');
+        const data = await response.json();
+        setHasSubscription(data.isSubscribed);
+      } catch (error) {
+        console.error(error);
+        // Handle error as appropriate
+      }
+    }
+
+    checkUserSubscription();
+  }, []);
+
+  const handleSubscribeClick = async () => { // New function for handling subscribe click
+    try {
+      setLoading(true);
+      const response = await axios.get("/api/stripe");
+      window.location.href = response.data.url;
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!hasSubscription) {
+    return (
+      <div style={{ color: '#333', padding: '40px', fontFamily: 'Arial, sans-serif' }}>
+        <h1 style={{ color: '#ff4500', textAlign: 'center', fontSize: '36px', marginBottom: '20px' }}>
+          🚀 Unleash the Power of Language Models with <span style={{ fontStyle: 'italic' }}>Superprompts!</span> 🚀
+        </h1>
+        <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
+          <strong style={{ fontSize: '24px', color: '#ff4500' }}>Why Superprompts?</strong> <span style={{ color: '#228B22', fontSize: '20px' }}>Superprompts</span> isn't just another tool; it's a <strong style={{ fontSize: '24px' }}>revolution!</strong> In the world of language model interactions, mastering prompt engineering is paramount. Superprompts empowers you with the skills to unlock the full potential of large language models.
+        </p>
+        <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
+          🌐 <strong style={{ fontSize: '24px', color: '#228B22' }}>Global Reach with Local Feel:</strong> Imagine having the ability to engage in conversations that are not just accurate but deeply connected to local linguistic nuances. Superprompts bridges the gap between language models and human expression, ensuring a global reach with a local feel.
+        </p>
+        <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
+          💡 <strong style={{ fontSize: '24px', color: '#ff4500' }}>Infinite Possibilities:</strong> Prompt engineering is akin to wielding a magic wand. Whether you're crafting content, generating ideas, or developing applications, Superprompts opens the door to limitless possibilities. Dive into the art of creating prompts that spark creativity and watch as uncharted potentials unfold.
+        </p>
+        <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
+          ⚡️ <strong style={{ fontSize: '24px', color: '#ff4500' }}>Speed and Efficiency:</strong> Prompt engineering isn't just about creativity; it's about optimization. Superprompts is your partner in achieving unmatched speed and efficiency. Each request is meticulously fine-tuned to ensure you receive the fastest and most accurate responses every time.
+        </p>
+        <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
+          🌟 <strong style={{ fontSize: '24px', color: '#ff4500' }}>Chain of Thought Prompting:</strong> Take your prompt engineering skills to the next level with techniques like chain of thought prompting. This powerful method allows you to guide the language model's responses step by step, resulting in more coherent and context-aware output. It's like having a conversation with the model, steering it towards your desired outcome.
+        </p>
+        <p style={{ fontSize: '20px', lineHeight: '1.6', textAlign: 'center', marginTop: '40px' }}>
+          Ready to embark on a transformative journey where technology meets creativity? With Superprompts, you'll witness how prompt engineering can amplify the capabilities of large language models. 
+          <button 
+            onClick={handleSubscribeClick} 
+            disabled={loading} 
+            style={{ color: '#ff4500', textDecoration: 'underline', fontWeight: 'bold', fontSize: '24px', cursor: 'pointer', background: 'none', border: 'none' }}>Subscribe Now!</button> 
+          and take the first step into the future of language model interaction with <span style={{ color: '#228B22', fontSize: '24px' }}>Superprompts!</span>
+        </p>
+      </div>
+    );
+  }
   const prompts: Prompt[] = [
     {
       title: "Shortened Prompt Title", // Shortened for convenience
