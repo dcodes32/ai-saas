@@ -132,10 +132,11 @@ const CodePage: React.FC = () => {
   };
 
   const makeTextBold = (text: string) => {
-    const boldPattern = /\\(.?)\\*/g;
-    const newText = text.replace(boldPattern, '<b>$1</b>');
+    const boldPattern = /\*(.+?)\*/g; // Adjusted the regex to match asterisks
+    const newText = text.replace(boldPattern, '<b>$1</b>'); // Replacing with HTML bold tags
     return newText;
   };
+  
 
   const handleReplacePlaceholders = () => {
     if (expandedPromptIndex !== null) {
