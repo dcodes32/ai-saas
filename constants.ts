@@ -1,4 +1,4 @@
-import { Code, ImageIcon, MessageSquare, Music, VideoIcon } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 
 export const MAX_FREE_COUNTS = 5;
 
@@ -11,39 +11,39 @@ export const tools = [
     bgColor: "bg-violet-500/10",
   },
   {
-    label: 'Producto de lujo',
+    label: 'SuperPrompts Gratis',
     icon: MessageSquare,
-    href: '/Producto%20de%20lujo',
+    color: "text-green-700",
+    bgColor: "bg-green-700/10",
+    href: '/SuperPrompts%20Gratis',
+  },
+  {
+    label: 'Optimización de Búsqueda (SEO)',
+    icon: MessageSquare,
+    href: '/Optimizacion%20de%20Busqueda%20(SEO)',
     color: "text-emerald-500",
     bgColor: "bg-emerald-500/10",
   },
   {
-    label: 'Producto innovador',
+    label: 'Publicidad Pagada',
     icon: MessageSquare,
     color: "text-pink-700",
     bgColor: "bg-pink-700/10",
-    href: '/Producto%20innovador',
+    href: '/Publicidad%20Pagada',
   },
   {
-    label: 'Promoción de evento',
+    label: 'Marketing por Correo Electronico',
     icon: MessageSquare,
     color: "text-orange-700",
     bgColor: "bg-orange-700/10",
-    href: '/Promocion%20de%20evento',
+    href: '/Marketing%20por%20Correo%20Electronico',
   },
   {
-    label: 'Producto progresivo',
+    label: 'Marketing en Redes Sociales',
     icon: MessageSquare,
     color: "text-green-700",
     bgColor: "bg-green-700/10",
-    href: '/Producto%20progresivo',
-  },
-  {
-    label: 'Seminario web',
-    icon: MessageSquare,
-    color: "text-green-700",
-    bgColor: "bg-green-700/10",
-    href: '/Seminario%20web',
+    href: '/Marketing en Redes Sociales',
   },
   {
     label: 'Campaña Publicitaria',
@@ -51,12 +51,5 @@ export const tools = [
     color: "text-green-700",
     bgColor: "bg-green-700/10",
     href: '/Campana%20Publicitaria',
-  },
-  {
-    label: 'testing',
-    icon: MessageSquare,
-    color: "text-green-700",
-    bgColor: "bg-green-700/10",
-    href: '/testing',
   },
 ];

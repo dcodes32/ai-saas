@@ -12,15 +12,16 @@ export const LandingHero = () => {
   return (
     <div className="text-white font-bold py-36 text-center space-y-5">
       <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl space-y-5 font-extrabold">
-        <h1>La mejor herramienta para</h1>
+        <h1>¡Optimiza tus prompts para ChatGPT!</h1>
         <div className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
           <TypewriterComponent
             options={{
               strings: [
-                "Extracción de Texto.",
-                "Análisis de PDF.",
-                "Comprensión de Documentos.",
-                "PDF Interactivo."
+                "Marketing por Correo Electrónico",
+                "Optimización para Motores de Búsqueda (SEO)",
+                "Publicidad Pagada",
+                "Marketing de Contenido",
+                "Marketing en Redes Sociales"
               ],
               autoStart: true,
               loop: true,
@@ -29,12 +30,12 @@ export const LandingHero = () => {
         </div>
       </div>
       <div className="text-sm md:text-xl font-light text-zinc-400">
-        Habla con tu documento!
+        ¡Crea tu propio SuperPrompt!
       </div>
       <div>
         <Link href={isSignedIn ? "/dashboard" : "/sign-up"}>
           <Button variant="premium" className="md:text-lg p-4 md:p-6 rounded-full font-semibold">
-            3 preguntas gratis
+            5 SuperPrompts Personales Gratis
           </Button>
         </Link>
       </div>

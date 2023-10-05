@@ -1,26 +1,9 @@
 "use client";
 
 
-import * as z from "zod";
 import axios from "axios";
-import { Code } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import ReactMarkdown from "react-markdown";
-import { useRouter } from "next/navigation";
-import { Heading } from "@/components/heading";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { cn } from "@/lib/utils";
-import { Loader } from "@/components/loader";
-import { UserAvatar } from "@/components/user-avatar";
-
-import { useProModal } from "@/hooks/use-pro-modal";
-
-import { formSchema } from "./constants";
-
-import { checkSubscription } from "@/lib/subscription";
-
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface Prompt {
   title: string;
@@ -67,30 +50,39 @@ const CodePage: React.FC = () => {
     return (
       <div style={{ color: '#333', padding: '40px', fontFamily: 'Arial, sans-serif' }}>
         <h1 style={{ color: '#ff4500', textAlign: 'center', fontSize: '36px', marginBottom: '20px' }}>
-          🚀 Unleash the Power of Language Models with <span style={{ fontStyle: 'italic' }}>Superprompts!</span> 🚀
+          🚀 Desata el Poder de los Modelos de Lenguaje con <span style={{ fontStyle: 'italic' }}>Superprompts</span> 🚀
         </h1>
         <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
-          <strong style={{ fontSize: '24px', color: '#ff4500' }}>Why Superprompts?</strong> <span style={{ color: '#228B22', fontSize: '20px' }}>Superprompts</span> isn't just another tool; it's a <strong style={{ fontSize: '24px' }}>revolution!</strong> In the world of language model interactions, mastering prompt engineering is paramount. Superprompts empowers you with the skills to unlock the full potential of large language models.
+          <strong style={{ fontSize: '24px', color: '#ff4500' }}>¿Por qué Superprompts?</strong> <span style={{ color: '#228B22', fontSize: '20px' }}>Superprompts</span> no es solo otra herramienta; ¡es una <strong style={{ fontSize: '24px' }}>revolución!</strong> En el mundo de las interacciones con modelos de lenguaje, dominar la ingeniería de indicaciones es fundamental. Superprompts te capacita con las habilidades para desbloquear todo el potencial de los grandes modelos de lenguaje.
         </p>
         <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
-          🌐 <strong style={{ fontSize: '24px', color: '#228B22' }}>Global Reach with Local Feel:</strong> Imagine having the ability to engage in conversations that are not just accurate but deeply connected to local linguistic nuances. Superprompts bridges the gap between language models and human expression, ensuring a global reach with a local feel.
+          🌐 <strong style={{ fontSize: '24px', color: '#228B22' }}>Alcance Global con un Toque Local:</strong> Imagina tener la capacidad de participar en conversaciones que no solo son precisas, sino que también están profundamente conectadas con las sutilezas lingüísticas locales. Superprompts elimina la brecha entre los modelos de lenguaje y la expresión humana, garantizando un alcance global con un toque local.
         </p>
         <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
-          💡 <strong style={{ fontSize: '24px', color: '#ff4500' }}>Infinite Possibilities:</strong> Prompt engineering is akin to wielding a magic wand. Whether you're crafting content, generating ideas, or developing applications, Superprompts opens the door to limitless possibilities. Dive into the art of creating prompts that spark creativity and watch as uncharted potentials unfold.
+          💡 <strong style={{ fontSize: '24px', color: '#ff4500' }}>Posibilidades Infinitas:</strong> La ingeniería de indicaciones es como manejar una varita mágica. Ya sea que estés creando contenido, generando ideas o desarrollando aplicaciones, Superprompts te abre la puerta a posibilidades ilimitadas. Sumérgete en el arte de crear indicaciones que estimulen la creatividad y observa cómo se despliegan potenciales inexplorados.
         </p>
         <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
-          ⚡️ <strong style={{ fontSize: '24px', color: '#ff4500' }}>Speed and Efficiency:</strong> Prompt engineering isn't just about creativity; it's about optimization. Superprompts is your partner in achieving unmatched speed and efficiency. Each request is meticulously fine-tuned to ensure you receive the fastest and most accurate responses every time.
+          ⚡️ <strong style={{ fontSize: '24px', color: '#ff4500' }}>Velocidad y Eficiencia:</strong> La ingeniería de indicaciones no se trata solo de creatividad; se trata de optimización. Superprompts es tu aliado para lograr una velocidad y eficiencia inigualables. Cada solicitud se ajusta meticulosamente para garantizar que recibas las respuestas más rápidas y precisas en todo momento.
         </p>
         <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
-          🌟 <strong style={{ fontSize: '24px', color: '#ff4500' }}>Chain of Thought Prompting:</strong> Take your prompt engineering skills to the next level with techniques like chain of thought prompting. This powerful method allows you to guide the language model's responses step by step, resulting in more coherent and context-aware output. It's like having a conversation with the model, steering it towards your desired outcome.
+          🌟 <strong style={{ fontSize: '24px', color: '#ff4500' }}>Indicaciones en Cadena de Pensamiento:</strong> Hay varios métodos probados que han demostrado que pueden hacer que ChatGPT aumente su rendimiento. Uno de estos métodos es la indicación en cadena de pensamiento, que permite guiar las respuestas del modelo de lenguaje paso a paso, lo que resulta en una salida más coherente y contextual.
+        </p>
+        <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
+          ⭐️ <strong style={{ fontSize: '24px', color: '#ff4500' }}>Superprompts en Tu Vida Cotidiana:</strong> Imagina contar con un asistente de lenguaje inteligente que te ayude en tu día a día. Superprompts puede responder tus preguntas, brindarte información actualizada y hasta ayudarte a redactar correos o mensajes de manera más efectiva. Simplifica tus tareas cotidianas y ahorra tiempo con Superprompts.
+        </p>
+        <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
+          🏢 <strong style={{ fontSize: '24px', color: '#ff4500' }}>Superprompts en Tu Trabajo:</strong> La eficiencia es esencial en el entorno laboral. Superprompts puede acelerar tus tareas de investigación, asistirte en la creación de informes y proporcionarte insights clave para tomar decisiones informadas. Ya sea que trabajes en marketing, desarrollo, atención al cliente o cualquier otro campo, Superprompts es tu aliado para destacar en tu trabajo.
+        </p>
+        <p style={{ fontSize: '18px', lineHeight: '1.6' }}>
+          🚀 <strong style={{ fontSize: '24px', color: '#ff4500' }}>Superprompts en Tu Negocio:</strong> En el competitivo mundo de los negocios, cada ventaja cuenta. Superprompts puede ayudarte a mejorar la comunicación con tus clientes, optimizar tu presencia en línea e incluso brindarte ideas innovadoras para el crecimiento de tu empresa. Desde estrategias de marketing hasta análisis de datos, Superprompts puede impulsar el éxito de tu negocio.
         </p>
         <p style={{ fontSize: '20px', lineHeight: '1.6', textAlign: 'center', marginTop: '40px' }}>
-          Ready to embark on a transformative journey where technology meets creativity? With Superprompts, you'll witness how prompt engineering can amplify the capabilities of large language models. 
+          ¿Listo para embarcarte en un viaje transformador donde la tecnología se encuentra con la creatividad? Con Superprompts, presenciarás cómo la ingeniería de indicaciones puede amplificar las capacidades de los grandes modelos de lenguaje. 
           <button 
             onClick={handleSubscribeClick} 
             disabled={loading} 
-            style={{ color: '#ff4500', textDecoration: 'underline', fontWeight: 'bold', fontSize: '24px', cursor: 'pointer', background: 'none', border: 'none' }}>Subscribe Now!</button> 
-          and take the first step into the future of language model interaction with <span style={{ color: '#228B22', fontSize: '24px' }}>Superprompts!</span>
+            style={{ color: '#ff4500', textDecoration: 'underline', fontWeight: 'bold', fontSize: '24px', cursor: 'pointer', background: 'none', border: 'none' }}>¡Suscríbete Ahora!</button> 
+          y da el primer paso hacia el futuro de la interacción con modelos de lenguaje con <span style={{ color: '#228B22', fontSize: '24px' }}>Superprompts</span>.
         </p>
       </div>
     );

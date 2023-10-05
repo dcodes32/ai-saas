@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Montserrat } from 'next/font/google'
-import { Code, ImageIcon, LayoutDashboard, MessageSquare, Music, Settings, VideoIcon } from "lucide-react";
+import { LayoutDashboard, MessageSquare, Settings } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
@@ -25,45 +25,39 @@ const routes = [
     color: "text-violet-500",
   },
   {
-    label: 'Producto de lujo',
+    label: 'SuperPrompts Gratis',
     icon: MessageSquare,
-    href: 'Producto%20de%20lujo',
+    href: '/SuperPrompts%20Gratis',
     color: "text-violet-500",
   }, 
   {
-    label: 'Producto innovador',
+    label: 'Optimización de Búsqueda (SEO)',
     icon: MessageSquare,
-    href: 'Producto%20innovador',
+    href: '/Optimizacion%20de%20Busqueda%20(SEO)',
     color: "text-violet-500",
   }, 
   {
-    label: 'Promoción de evento',
+    label: 'Publicidad Pagada',
     icon: MessageSquare,
-    href: 'Promocion%20de%20evento',
+    href: '/Publicidad%20Pagada',
     color: "text-violet-500",
   }, 
   {
-    label: 'Producto progresivo',
+    label: 'Marketing por Correo Electronico',
     icon: MessageSquare,
-    href: 'Producto%20progresivo',
+    href: '/Marketing%20por%20Correo%20Electronico',
     color: "text-violet-500",
   }, 
   {
-    label: 'Seminario web',
+    label: 'Marketing en Redes Sociales',
     icon: MessageSquare,
-    href: 'Seminario%20web',
+    href: '/Marketing en Redes Sociales',
     color: "text-violet-500",
   }, 
   {
     label: 'Campaña Publicitaria',
     icon: MessageSquare,
     href: 'Campana%20Publicitaria',
-    color: "text-violet-500",
-  }, 
-  {
-    label: 'testing',
-    icon: MessageSquare,
-    href: 'testing',
     color: "text-violet-500",
   }, 
   {

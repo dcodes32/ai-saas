@@ -51,7 +51,7 @@ const ConversationPage = () => {
       if (error?.response?.status === 403) {
         proModal.onOpen();
       } else {
-        toast.error("Something went wrong.");
+        toast.error("Hubo un error");
       }
     } finally {
       router.refresh();
@@ -61,8 +61,8 @@ const ConversationPage = () => {
   return ( 
     <div>
       <Heading
-        title="Conversation"
-        description="Our most advanced conversation model."
+        title="Habla con ChatGPT"
+        description="Utiliza tus superprompts para hablar con ChatGPT"
         icon={MessageSquare}
         iconColor="text-violet-500"
         bgColor="bg-violet-500/10"
@@ -93,7 +93,7 @@ const ConversationPage = () => {
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading} 
-                        placeholder="How do I calculate the radius of a circle?" 
+                        placeholder="Pega tu SuperPrompt personalizado aqui" 
                         {...field}
                       />
                     </FormControl>
@@ -101,7 +101,7 @@ const ConversationPage = () => {
                 )}
               />
               <Button className="col-span-12 lg:col-span-2 w-full" type="submit" disabled={isLoading} size="icon">
-                Generate
+                Enviar
               </Button>
             </form>
           </Form>
@@ -113,7 +113,7 @@ const ConversationPage = () => {
             </div>
           )}
           {messages.length === 0 && !isLoading && (
-            <Empty label="No conversation started." />
+            <Empty label="" />
           )}
           <div className="flex flex-col-reverse gap-y-4">
             {messages.map((message) => (
