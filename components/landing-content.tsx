@@ -99,7 +99,7 @@ export const LandingContent = () => {
       </p>
       <div className="mt-10">
         <a 
-          href="https://www.youtube.com/watch?v=1o0iW_lVYjY" 
+          href="https://youtu.be/suP4mRlTYDk" 
           target="_blank" 
           rel="noopener noreferrer" 
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
